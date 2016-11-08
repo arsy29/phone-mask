@@ -1,5 +1,5 @@
 (function(){
-	angular.module("phone-mask")
+	angular.module("projectRed")
 		.directive("phoneMask", ['$log','$timeout', function($log, $timeout){
 			return {
 				restrict: 'A',
@@ -17,12 +17,17 @@
 							var secondPart = (v+ "").substr(caret, v.lenght).replace(/\D/g,'');
 							var clean=(firstPart+secondPart);
 							var old= (o+'').replace(/\D/g, '');
+							var oldCaret;
 							if(clean.length > maxlength){
 								clean = old;
+								currentCaret = caret - 1;
+								$log.info("caret - 1")
 							}
 							var caretFromClean = firstPart.length;
 							var processed = '';
 							var length = clean.length;
+							$log.info("first part " + firstPart);
+
 							if(length < 8){
 								caret = caretFromClean;
 								if(caretFromClean > 3){
@@ -58,11 +63,11 @@
 								}
 							}else if(length == 12){ // cell phone
 								caret = caretFromClean+1;
-								if(caretFromClean == 2){
+								if(caretFromClean > 2){
 									caret++;
-								}if(caretFromClean == 5){
+								}if(caretFromClean > 5){
 									caret++;
-								}if(caretFromClean == 8){
+								}if(caretFromClean > 8){
 									caret++;
 								}
 								for(var i=0; i< length; i++){
@@ -76,18 +81,18 @@
 								}
 							}
 
-
-							if (clean.length != old.length){
+							if (clean.length != old.length && old.length <= maxlength){
 								currentCaret = caret;
+								$log.info("currentCaret is " + caret);
 							}
 
 							
 							ngModelCtrl.$viewValue = processed;
 							$scope.ngModel = clean;
 							ngModelCtrl.$render();
+
 							$element[0].selectionStart = currentCaret;
 							$element[0].selectionEnd = currentCaret;
-
 
 						}
 		            });
